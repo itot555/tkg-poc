@@ -13,36 +13,10 @@ docker ps | grep registry &&  docker rm -f registryhen
 
 mkdir -p $SCRIPT_ROOT/certs $SCRIPT_ROOT/registry_data
 
-if [[ ! -f $SCRIPT_ROOT/certs/domain.crt ]
-then
-  cat <<EOF >  $SCRIPT_ROOT/certs/openssl.conf
-[req]
-distinguished_name = req_distinguished_name
-x509_extensions = v3_req
-prompt = no
-[req_distinguished_name]
-
-CN = $JUMPBOX_IP
-[v3_req]
-keyUsage = keyEncipherment, dataEncipherment
-extendedKeyUsage = serverAuth
-subjectAltName = @alt_names
-[alt_names]
-DNS.1 = localhost
-IP.1 = $JUMPBOX_IP
-EOF
-
+[[ -f $SCRIPT_ROOT/certs/domain.crt ]] || \
   openssl req \
-  -x509 \
-  -newkey rsa:4096 \
-  -sha256 \
-  -days 390 \
-  -nodes \
-  -extensions 'v3_req' \
-  -keyout $SCRIPT_ROOT/certs/domain.key \
-  -out $SCRIPT_ROOT/certs/domain.crt \
-  -config $SCRIPT_ROOT/certs/openssl.conf
-fi
+    -newkey rsa:4096 -nodes -sha256 -keyout $SCRIPT_ROOT/certs/domain.key \	then
+    -x509 -days 365 -out $SCRIPT_ROOT/certs/domain.crt -subj "/CN=$JUMPBOX_IP" 
 
 docker run \
   --restart=always \
