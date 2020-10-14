@@ -8,13 +8,41 @@ echo "Checking Docker runtime"
 docker run --rm -t hello-world
 
 
-docker ps | grep registry &&  docker rm -f registry
+docker ps | grep registry &&  docker rm -f registryhen
+
 
 mkdir -p $SCRIPT_ROOT/certs $SCRIPT_ROOT/registry_data
 
-[[ -f $SCRIPT_ROOT/certs/domain.crt ]] || openssl req \
-  -newkey rsa:4096 -nodes -sha256 -keyout $SCRIPT_ROOT/certs/domain.key \
-  -x509 -days 365 -out $SCRIPT_ROOT/certs/domain.crt -subj "/CN=$JUMPBOX_IP" 
+if [[ ! -f $SCRIPT_ROOT/certs/domain.crt ]
+then
+  cat <<EOF >  $SCRIPT_ROOT/certs/openssl.conf
+[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+
+CN = $JUMPBOX_IP
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = localhost
+IP.1 = $JUMPBOX_IP
+EOF
+
+  openssl req \
+  -x509 \
+  -newkey rsa:4096 \
+  -sha256 \
+  -days 390 \
+  -nodes \
+  -extensions 'v3_req' \
+  -keyout $SCRIPT_ROOT/certs/domain.key \
+  -out $SCRIPT_ROOT/certs/domain.crt \
+  -config $SCRIPT_ROOT/certs/openssl.conf
+fi
 
 docker run \
   --restart=always \
