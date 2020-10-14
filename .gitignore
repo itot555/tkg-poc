@@ -1,0 +1,10 @@
+publish-images.sh
+.tkg/
+.env-private
+data/
+registry-data/
+certs/
+registry_data/
+*.kubeconfig
+.env
+
