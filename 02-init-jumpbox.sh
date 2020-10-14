@@ -9,7 +9,7 @@ curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/jum
 echo Patch docker daemon
 sudo cat > /etc/docker/daemon.json << EOF
 {
-"insecure-registries": ["https://${JUMPBOX_IP}:5000", "http://localhost:5000"]
+"insecure-registries": ["${JUMPBOX_IP}:5000", "localhost:5000"]
 }
 EOF
 sudo systemctl restart docker
@@ -20,5 +20,5 @@ sudo iptables -A INPUT -i docker0 -j ACCEPT
 
 sudo apt-get install -qqy iptables-persistent
 
-sudo systemctl start iptables-persistent
+sudo systemctl start netfilter-persistent
 
