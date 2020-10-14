@@ -8,3 +8,4 @@ registry_data/
 *.kubeconfig
 .env
 
+.kubeconfig
