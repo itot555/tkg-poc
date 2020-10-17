@@ -10,3 +10,4 @@ registry_data/
 
 .kubeconfig
 metallb/02-secret-emberlist.yaml
+clusters/

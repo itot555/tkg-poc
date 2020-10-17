@@ -133,3 +133,8 @@ Alternatively, you can setup `.env` manually
 MetalLB
 Create random secret
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
+
+
+
+
+grep -RiIl 'registry.tkg.vmware.run' | xargs sed -i "s/registry.tkg.vmware.run/$TKG_CUSTOM_IMAGE_REPOSITORY/g"
