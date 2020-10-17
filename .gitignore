@@ -9,3 +9,4 @@ registry_data/
 .env
 
 .kubeconfig
+metallb/02-secret-emberlist.yaml

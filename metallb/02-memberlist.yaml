@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  secretkey: VDJzNmxQemkzTDM1TndQMlVJWlRQbkJTZ2N0bThIcWx2c0tkaVhwa29Gb09ldDh5dldHcEt6cDd5bEtSQnVFSwoyOE9GMnhoR09HSGNIMDhDL0VRbGFPNVRmMmEyRWQ1WjRFbUMyUmFkdGRUS3h3ejVUR2tsWFhlakFUNkN1RkdTClh0Nyt3a0FXNy9YWUZ4TTIrekZUVGsyeXk4S0Y3WG5qbloyUVRMYUsxdDQ9
-kind: Secret
-metadata:
-  creationTimestamp: null
-  name: memberlist
-  namespace: metallb-system
