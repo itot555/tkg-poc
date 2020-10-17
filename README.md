@@ -128,3 +128,8 @@ Alternatively, you can setup `.env` manually
 # Install Applications
 
 
+
+
+MetalLB
+Create random secret
+kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
