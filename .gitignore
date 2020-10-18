@@ -2,6 +2,7 @@
 .kubeconfig
 .tkg/
 *.kubeconfig
+certs/
 clusters/
 data/
 metallb/02-secret-emberlist.yaml
@@ -9,4 +10,3 @@ registry/
 scripts/publish-images.sh
 tkg-config.yaml
 tmp.*
-certs/ca.crt
