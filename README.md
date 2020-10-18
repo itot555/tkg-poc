@@ -17,12 +17,12 @@ It assumes:
 - OVA files 
 - mkcert  
   ```
-  curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > ~/bin/mkcert; chmod a+x ~/bin/mkcert
+  curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > $PROJECT_ROOT/bin/mkcert; chmod a+x $PROJECT_ROOT/bin/mkcert
   mkcert -install
   ```  
 - octant
   ```
-  curl -sSL https://github.com/vmware-tanzu/octant/releases/download/v0.16.1/octant_0.16.1_Linux-arm64.tar.gz  |  tar  --strip-components 1  -C ~/bin -xzvf - octant_0.16.1_Linux-arm64/octant  &&  chmod a+x ~/bin/octant
+  curl -sSL https://github.com/vmware-tanzu/octant/releases/download/v0.16.1/octant_0.16.1_Linux-64bit.tar.gz  |  tar  --strip-components 1  -C $PROJECT_ROOT/bin -xzvf - octant_0.16.1_Linux-64bit/octant  &&  chmod a+x $PROJECT_ROOT/bin/octant
   ```
 
 # Prepare vSphere Environment
