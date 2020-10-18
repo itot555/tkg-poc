@@ -15,9 +15,21 @@ It assumes:
 - tkg extensions
 - crash diagnostics
 - OVA files 
+- mkcert
+  
+  ```
+  curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > ~/bin/mkcert; chmod a+x ~/bin/mkcert
+  mkcert -install
+  ```  
 
 # Prepare vSphere Environment
 Follow instruction on official documentation to prepare vSphere for TKG installation
+- No firewall between Jumpbox to vCenter
+- No firewall between cluster (management + workloads) to vCenter
+- Network subnet for management and workload cluster
+  - DHCP enabled
+  - DHCP IP pool should be suficient to run all management and gues cluster VMs (master + worker + extra)
+  - Reserved Ips in same subnet for VIPs
 
 
 # Install TKG Management Cluster
@@ -28,12 +40,12 @@ At this point you should go to terminal/shell of you jumpbox and follow the the 
 
 ```
 git clone https://github.com/yogendra/tkg-poc ~/tkg-poc
-cd ~/poc
+cd ~/tkg-poc
 ```
 
 ## Copy packages
 
-All the downloaded packages, not OVA files, should be copied to ~/poc/packages. You can use any preferred method(WinSCP/Mac Finder SSH connection/Filezilla)
+All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packages. You can use any preferred method(WinSCP/Mac Finder SSH connection/Filezilla)
 
 ## Setup `.env`
 
@@ -45,33 +57,29 @@ Automated setup
   ./00-init-env.sh
   ```
 
-Alternatively, you can setup `.env` manually
+Alternatively, you can setup `.env` manually by copying `.env_sample`
 
 - Create a `.env` file
 
   ```
-  touch .env
+  cp .env_sample  .env
   ```
 
 - Edit `.env` and add following settings
 
-  - Set client name
-
-    ```
-    CLIENT=super-tech
-    ```
-
-  - Set Jumpbox IP (one provided by client)
-
-    ```
-    JUMPBOX_IP=10.1.2.3
-    ```
-
-  - Set POC Domain. This is generally one domain that you would use for multiple POC. Every client will have a subdomain under this.
-
-    ```
-    POC_DOMAIN=corp.local
-    ```
+| Env Var                                     | Description                                                                                       |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| CLIENT                                      | Chort client name. DNS compliant (no spacem, lowercase, no underscore)                            |
+| JUMPBOX_IP                                  | IP address of internet connected VM where images will be pulled and stores                        |
+| POC_DOMAIN                                  | Domain name sufix for POC  (Example: tkg-poc.corp.local)                                          |
+| ROOT_DOMAIN                                 | Internal Root Domain for infrastructure (Example: corp.local)                                     |
+| LOCAL_REGISTRY                              | Local private registry for initialization. This might be on Jumpbox (Example: <jumpbox_ip>:5000 ) |
+| TKG_CUSTOM_IMAGE_REPOSITORY                 | Same as LOCAL_REGISTRY                                                                            |
+| TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY | true if you are using private CA or http only                                                     |
+| GOVC_URL                                    | vCenter URL                                                                                       |
+| GOVC_INSECURE                               | State true if vcenter  is using private CA certs                                                  |
+| GOVC_USERNAME                               | vCenter username (Example: administrator@vsphere.local)                                           |
+| GOCV_PASSWORD                               | vCenter password                                                                                  |
 
 ## Init Jumpbox
 
@@ -112,11 +120,12 @@ Alternatively, you can setup `.env` manually
 
 # Prepare Shared Cluster
 
+- Metal LB
 - Cert Manager
 - Contour
 - Harbor
-- DEX
-- ELK
+- DEX (Optional)
+- ELK (Optional)
 
 # Prepare Apps Cluster
 
