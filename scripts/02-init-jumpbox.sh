@@ -42,3 +42,5 @@ mkcert -init
 mkdir -p $PROJECT_ROOT/certs
 
 cp $(mkcert -CAROOT)/rootCA.pem certs/ca.crt
+
+curl -sSL https://github.com/goharbor/harbor/releases/download/v2.1.0/harbor-offline-installer-v2.1.0.tgz -o packages/harbor-offline-installer-v2.1.0.tgz
