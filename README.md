@@ -15,12 +15,15 @@ It assumes:
 - tkg extensions
 - crash diagnostics
 - OVA files 
-- mkcert
-  
+- mkcert  
   ```
   curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > ~/bin/mkcert; chmod a+x ~/bin/mkcert
   mkcert -install
   ```  
+- octant
+  ```
+  curl -sSL https://github.com/vmware-tanzu/octant/releases/download/v0.16.1/octant_0.16.1_Linux-arm64.tar.gz  |  tar  --strip-components 1  -C ~/bin -xzvf - octant_0.16.1_Linux-arm64/octant  &&  chmod a+x ~/bin/octant
+  ```
 
 # Prepare vSphere Environment
 Follow instruction on official documentation to prepare vSphere for TKG installation
@@ -99,6 +102,16 @@ Alternatively, you can setup `.env` manually by copying `.env_sample`
   ./05-migrate-images.sh
   ```
 
+
+# Udate config 
+
+Add private/internal CA to the plans
+
+Edit `/home/ubuntu/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
+
+
+
+
 # Setup TKG config using UI
 - Run GUI wizard to prepare `~/.tkg/config.yaml`
   ```
@@ -120,6 +133,7 @@ Alternatively, you can setup `.env` manually by copying `.env_sample`
 
 # Prepare Shared Cluster
 
+- Storage Class  
 - Metal LB
 - Cert Manager
 - Contour
@@ -129,6 +143,10 @@ Alternatively, you can setup `.env` manually by copying `.env_sample`
 
 # Prepare Apps Cluster
 
+- Storage Class  
+- Metal LB
+- Cert Manager
+- Contour
 - Gangway
 - Fluent-bit
 - Cert Manager
