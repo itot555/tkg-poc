@@ -26,4 +26,4 @@ mkcert -init
 
 mkdir -p $SCRIPT_ROOT/certs
 
-cp $(mkcert -CAROOT)/rootCA.pem certs/ca.pem
+cp $(mkcert -CAROOT)/rootCA.pem certs/ca.crt
