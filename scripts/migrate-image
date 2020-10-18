@@ -1,0 +1,4 @@
+#!/bin/bash
+docker pull $remote_image
+docker tag $remote_image $local_image
+docker push $local_image
