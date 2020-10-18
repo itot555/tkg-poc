@@ -27,10 +27,6 @@ chmod a+x $PROJECT_ROOT/bin/docker-compose
 
 mkcert -init
 
-mkdir -p $PROJECT_ROOT/certs
-
-cp $(mkcert -CAROOT)/rootCA.pem certs/ca.crt
-
 echo Updating trust ca store
 
 sudo mkdir -p /usr/local/share/ca-certificates/tanzu
