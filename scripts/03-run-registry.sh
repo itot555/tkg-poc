@@ -25,12 +25,12 @@ docker run --rm -t hello-world
 docker ps | grep registry &&  docker rm -f registry
 
 
-mkdir -p $PROJECT_ROOT/certs $PROJECT_ROOT/registry_data
+mkdir -p $PROJECT_ROOT/registy/certs $PROJECT_ROOT/registy/data
 
-if [[ ! -f $PROJECT_ROOT/certs/registry.crt ]] ; then
+if [[ ! -f $PROJECT_ROOT/registry/certs/registry.crt ]] ; then
   mkcert \
-    -cert-file $PROJECT_ROOT/certs/registry.crt \
-    -key-file $PROJECT_ROOT/certs/registry.key \
+    -cert-file $PROJECT_ROOT/registry/certs/registry.crt \
+    -key-file $PROJECT_ROOT/registry/certs/registry.key \
     $JUMPBOX_IP central-registry.default.cluster.local central-registry.corp.local localhost 127.0.0.1
 fi
 
@@ -38,8 +38,8 @@ docker run \
   --restart=always \
   --name registry \
   --hostname registry \
-  -v $PROJECT_ROOT/registry_data:/var/lib/registry \
-  -v "$(pwd)"/certs:/certs \
+  -v $PROJECT_ROOT/registry/data:/var/lib/registry \
+  -v $PROJECT_ROOT/registry/certs:/certs \
   -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
   -e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
@@ -47,7 +47,7 @@ docker run \
   -d \
   registry:2
 
-echo "Tag for local registry hello-world => $LOCAL_REGISTY/hello-world"
+echo "Tag for local registry hello-world => $LOCAL_REGISTRY/hello-world"
 docker tag hello-world ${LOCAL_REGISTRY}/hello-world
 
 echo "Push image tp ${LOCAL_REGISTRY}/hello-world"
