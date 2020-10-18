@@ -1,4 +1,11 @@
 #!/bin/bash
+remote_image=${1?"Remote Image not given"}; shift
+local_image=$1
+
 docker pull $remote_image
+[[ -n $local_image ]] || local_image=$(docker pull $remote_image | tail -1 | sed -E  "s#[^/]+/#$LOCAL_REGISTRY/#" )
+
+echo Moving $remote_image to $local_image
+
 docker tag $remote_image $local_image
 docker push $local_image
