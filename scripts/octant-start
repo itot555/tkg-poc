@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nohup octant --enable-feature-applications --listener-addr $JUMPBOX_IP:50001 --kubeconfig $KUBECONFIG &> /tmp/octant.log  & disown
