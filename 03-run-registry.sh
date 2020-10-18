@@ -8,15 +8,17 @@ echo "Checking Docker runtime"
 docker run --rm -t hello-world
 
 
-docker ps | grep registry &&  docker rm -f registryhen
+docker ps | grep registry &&  docker rm -f registry
 
 
 mkdir -p $SCRIPT_ROOT/certs $SCRIPT_ROOT/registry_data
 
-[[ -f $SCRIPT_ROOT/certs/domain.crt ]] || \
-  openssl req \
-    -newkey rsa:4096 -nodes -sha256 -keyout $SCRIPT_ROOT/certs/domain.key \	then
-    -x509 -days 365 -out $SCRIPT_ROOT/certs/domain.crt -subj "/CN=$JUMPBOX_IP" 
+if [[ -f $SCRIPT_ROOT/certs/domain.crt ]] ; then
+  mkcert -init
+  mkcert \
+    -cert-file $SCRIPT_ROOT/certs/registry.crt \
+    -key-file $SCRIPT_ROOT/certs/registry.key \
+    $JUMPBOX_IP central-registry.default.cluster.local central-registry.corp.local localhost 127.0.0.1
 
 docker run \
   --restart=always \
@@ -25,8 +27,8 @@ docker run \
   -v $SCRIPT_ROOT/registry_data:/var/lib/registry \
   -v "$(pwd)"/certs:/certs \
   -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
-  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
-  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
   -p 5000:5000 \
   -d \
   registry:2
