@@ -107,11 +107,69 @@ All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packag
 
 Add private/internal CA to the plans
 
-Edit `/home/ubuntu/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
+Edit `$HOME/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
 
+1.  Update controle-plane template
+   
+    - Look for object with following begining
 
+      ```
+      apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmControlPlane
+      metadata:
+        name: '${ CLUSTER_NAME }-control-plane'
+        namespace: '${ NAMESPACE }'
+      ```
+    - Add ca cert using `files`
+     
+        ```
+              - content: |
+                  -----BEGIN CERTIFICATE-----
+                  <CA CERTIFICATE>
+                  -----END CERTIFICATE-----
+                owner: root:root
+                path: /etc/ssl/certs/internal-ca.pem
+        ```
+    - Update `preKubeadmCommands`
+      - Add rehash commands
+      - Add containerd restart
 
-
+        ```
+            preKubeadmCommands:
+            - hostname "{{ ds.meta_data.hostname }}"
+            - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+            - echo "127.0.0.1   localhost" >>/etc/hosts
+            - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
+            - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
+            - /usr/bin/rehash_ca_certificates.sh
+        ```
+2.  Update worker template
+    - Look for object with following begining
+      ```
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfigTemplate
+      metadata:
+        name: '${ CLUSTER_NAME }-md-0'
+        namespace: '${ NAMESPACE }'
+      ```
+    - Add ca cert and prekubeadm commands
+      ```
+            files:
+            - content: |
+                -----BEGIN CERTIFICATE-----
+                <CA CERTIFICATE>
+                -----END CERTIFICATE-----
+              owner: root:root
+              path: /etc/ssl/certs/internal-ca.pem  
+            preKubeadmCommands:
+            - hostname "{{ ds.meta_data.hostname }}"
+            - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+            - echo "127.0.0.1   localhost" >>/etc/hosts
+            - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
+            - echo "{{ ds.meta_data.hostname }}" >/etc/hostname          
+            - /usr/bin/rehash_ca_certificates.sh
+      ```
+     
 # Setup TKG config using UI
 - Run GUI wizard to prepare `~/.tkg/config.yaml`
   ```
