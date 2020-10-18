@@ -24,3 +24,4 @@ cp $(mkcert -CAROOT)/rootCA.pem /usr/local/share/ca-certificates/tanzu/ca.crt
 chmod 0644 /usr/local/share/ca-certificates/tanzu/ca.crt
 
 update-ca-certificates
+
