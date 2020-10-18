@@ -24,15 +24,17 @@ curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/jum
 curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o $PROJECT_ROOT/bin/docker-compose
 chmod a+x $PROJECT_ROOT/bin/docker-compose
 
-
+mkdir -p $PROJECT_ROOT/certs
 mkcert -init
+cp $(mkcert -CAROOT)/rootCA.pem $PROJECT_ROOT/certs/ca.crt
+cp $(mkcert -CAROOT)/rootCA-key.pem $PROJECT_ROOT/certs/ca.key
 
 echo Updating trust ca store
 
 sudo mkdir -p /usr/local/share/ca-certificates/tanzu
 sudo chmod 755 /usr/local/share/ca-certificates/tanzu
 
-sudo cp $(mkcert -CAROOT)/rootCA.pem /usr/local/share/ca-certificates/tanzu/ca.crt
+sudo cp $PROJECT_ROOT/certs/ca.crt /usr/local/share/ca-certificates/tanzu/ca.crt
 sudo chmod 0644 /usr/local/share/ca-certificates/tanzu/ca.crt
 
 sudo update-ca-certificates
