@@ -19,9 +19,7 @@ source $PROJECT_ROOT/.env
 
 tkg get mc &>> /dev/null
 
-$PROJECT_ROOT/gen-publish-images.sh > $/scripts/publish-images.sh
+$PROJECT_ROOT/scripts/gen-publish-images.sh > $PROJECT_ROOT/scripts/publish-images.sh
 
-chmod a+x $PROJECT_ROOT/scripts/publish-images.sh
-
-$PROJECT_ROOT/scripts/publish-images.sh
+sh $PROJECT_ROOT/scripts/publish-images.sh
 
