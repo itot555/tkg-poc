@@ -21,12 +21,26 @@ source $PROJECT_ROOT/.env
 curl -sSL https://raw.githubusercontent.com/yogendra/dotfiles/master/scripts/jumpbox-init.sh | bash -s common k8s vsphere
 
 
-echo Patch docker daemon
-sudo cat > /etc/docker/daemon.json << EOF
-{
-"insecure-registries": [ "${LOCAL_REGISTRY}", "localhost:5000", "127.0.0.1:5000"]
-}
-EOF
+curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o $PROJECT_ROOT/bin/docker-compose
+chmod a+x $PROJECT_ROOT/bin/docker-compose
+
+
+mkcert -init
+
+mkdir -p $PROJECT_ROOT/certs
+
+cp $(mkcert -CAROOT)/rootCA.pem certs/ca.crt
+
+echo Updating trust ca store
+
+sudo mkdir -p /usr/local/share/ca-certificates/tanzu
+sudo chmod 755 /usr/local/share/ca-certificates/tanzu
+
+sudo cp $(mkcert -CAROOT)/rootCA.pem /usr/local/share/ca-certificates/tanzu/ca.crt
+sudo chmod 0644 /usr/local/share/ca-certificates/tanzu/ca.crt
+
+sudo update-ca-certificates
+
 sudo systemctl restart docker
 
 echo Allow Kind to Docker communication iptables
@@ -37,10 +51,5 @@ sudo apt-get install -qqy iptables-persistent
 
 sudo systemctl start netfilter-persistent
 
-mkcert -init
-
-mkdir -p $PROJECT_ROOT/certs
-
-cp $(mkcert -CAROOT)/rootCA.pem certs/ca.crt
 
 curl -sSL https://github.com/goharbor/harbor/releases/download/v2.1.0/harbor-offline-installer-v2.1.0.tgz -o packages/harbor-offline-installer-v2.1.0.tgz
