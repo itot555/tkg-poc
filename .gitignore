@@ -2,12 +2,11 @@
 .kubeconfig
 .tkg/
 *.kubeconfig
-clusters/
 certs/
+clusters/
 data/
 harbor
 metallb/02-secret-emberlist.yaml
 registry_data/
 scripts/publish-images.sh
 tkg-config.yaml
-
