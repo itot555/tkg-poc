@@ -34,7 +34,7 @@ mkcert \
     $JUMPBOX_IP central-registry.default.cluster.local central-registry.corp.local localhost 127.0.0.1
 openssl x509 -inform PEM -in $HARBOR_DATA/certs/localhost.crt -out $HARBOR_DATA/certs/localhost.cert
 
-cp $PROJECT_ROOT/certs/ca.crt $HARBOR_DATA/certs/ca.crt
+cp $(mkcert -CAROOT)/rootCA.pem $HARBOR_DATA/certs/ca.crt
 openssl x509 -inform PEM -in $HARBOR_DATA/certs/ca.crt -out $HARBOR_DATA/certs/ca.cert
 
 
