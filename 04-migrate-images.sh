@@ -19,5 +19,7 @@ tkg get mc &>> /dev/null
 
 $SCRIPT_ROOT/gen-publish-images.sh > $SCRIPT_ROOT/publish-images.sh
 
+chmod a+x $SCRIPT_ROOT/publish-images.sh
 
+$SCRIPT_ROOT/publish-images.sh
 
