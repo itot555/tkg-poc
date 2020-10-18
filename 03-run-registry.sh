@@ -13,12 +13,12 @@ docker ps | grep registry &&  docker rm -f registry
 
 mkdir -p $SCRIPT_ROOT/certs $SCRIPT_ROOT/registry_data
 
-if [[ -f $SCRIPT_ROOT/certs/domain.crt ]] ; then
-  mkcert -init
+if [[ ! -f $SCRIPT_ROOT/certs/registry.crt ]] ; then
   mkcert \
     -cert-file $SCRIPT_ROOT/certs/registry.crt \
     -key-file $SCRIPT_ROOT/certs/registry.key \
     $JUMPBOX_IP central-registry.default.cluster.local central-registry.corp.local localhost 127.0.0.1
+fi
 
 docker run \
   --restart=always \
