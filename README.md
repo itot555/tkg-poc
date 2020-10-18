@@ -50,60 +50,60 @@ cd ~/tkg-poc
 
 All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packages. You can use any preferred method(WinSCP/Mac Finder SSH connection/Filezilla)
 
-## Setup `.env`
+## Jumpbox Preparations
 
-Automated setup
+1.  Initialize env 
+    -  Run init env script
 
-- Run init env script
+        ```
+        01-init-env.sh
+        ```
+        **OR**
+    - Alternatively, you can setup `.env` manually by copying `.env_sample`
 
-  ```
-  ./00-init-env.sh
-  ```
+      - Create a `.env` file
 
-Alternatively, you can setup `.env` manually by copying `.env_sample`
+        ```
+        cp .env_sample  .env
+        ```
 
-- Create a `.env` file
+      - Edit `.env` and add following settings
 
-  ```
-  cp .env_sample  .env
-  ```
+        | Env Var                                     | Description                                                                                       |
+        | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+        | CLIENT                                      | Chort client name. DNS compliant (no spacem, lowercase, no underscore)                            |
+        | JUMPBOX_IP                                  | IP address of internet connected VM where images will be pulled and stores                        |
+        | POC_DOMAIN                                  | Domain name sufix for POC  (Example: tkg-poc.corp.local)                                          |
+        | ROOT_DOMAIN                                 | Internal Root Domain for infrastructure (Example: corp.local)                                     |
+        | LOCAL_REGISTRY                              | Local private registry for initialization. This might be on Jumpbox (Example: <jumpbox_ip>:5000 ) |
+        | TKG_CUSTOM_IMAGE_REPOSITORY                 | Same as LOCAL_REGISTRY                                                                            |
+        | TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY | true if you are using private CA or http only                                                     |
+        | GOVC_URL                                    | vCenter URL                                                                                       |
+        | GOVC_INSECURE                               | State true if vcenter  is using private CA certs                                                  |
+        | GOVC_USERNAME                               | vCenter username (Example: administrator@vsphere.local)                                           |
+        | GOCV_PASSWORD                               | vCenter password                                                                                  |
 
-- Edit `.env` and add following settings
+1.  Init Jumpbox
 
-| Env Var                                     | Description                                                                                       |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| CLIENT                                      | Chort client name. DNS compliant (no spacem, lowercase, no underscore)                            |
-| JUMPBOX_IP                                  | IP address of internet connected VM where images will be pulled and stores                        |
-| POC_DOMAIN                                  | Domain name sufix for POC  (Example: tkg-poc.corp.local)                                          |
-| ROOT_DOMAIN                                 | Internal Root Domain for infrastructure (Example: corp.local)                                     |
-| LOCAL_REGISTRY                              | Local private registry for initialization. This might be on Jumpbox (Example: <jumpbox_ip>:5000 ) |
-| TKG_CUSTOM_IMAGE_REPOSITORY                 | Same as LOCAL_REGISTRY                                                                            |
-| TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY | true if you are using private CA or http only                                                     |
-| GOVC_URL                                    | vCenter URL                                                                                       |
-| GOVC_INSECURE                               | State true if vcenter  is using private CA certs                                                  |
-| GOVC_USERNAME                               | vCenter username (Example: administrator@vsphere.local)                                           |
-| GOCV_PASSWORD                               | vCenter password                                                                                  |
+    ```
+    02-init-jumpbox.sh
+    ```
 
-## Init Jumpbox
+1.  Run registry on jumpbox
 
-  ```
-  ./02-init-jumpbox.sh
-  ```
+    ```
+    03-run-registry.sh
+    ```
 
-- Run registry on jumpbox
+1.  Migrate images
 
-  ```
-  ./03-run-registry.sh
-  ```
-
-- Migrate images
-
-  ```
-  ./05-migrate-images.sh
-  ```
+    ```
+    04-migrate-tkg-images.sh
+    ```
 
 
-# Udate config 
+## Prepare TKG Config
+
 
 Add private/internal CA to the plans
 
