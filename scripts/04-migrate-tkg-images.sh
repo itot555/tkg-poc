@@ -12,14 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 SCRIPT_ROOT=$( cd `dirname $0`; pwd)
-source $SCRIPT_ROOT/.env
+PROJECT_ROOT=${PROJECT_ROOT:-$(cd $SCRIPT_ROOT/..; pwd)}
+source $PROJECT_ROOT/.env
 
 tkg get mc &>> /dev/null
 
-$SCRIPT_ROOT/gen-publish-images.sh > $SCRIPT_ROOT/publish-images.sh
+$PROJECT_ROOT/gen-publish-images.sh > $/scripts/publish-images.sh
 
-chmod a+x $SCRIPT_ROOT/publish-images.sh
+chmod a+x $PROJECT_ROOT/scripts/publish-images.sh
 
-$SCRIPT_ROOT/publish-images.sh
+$PROJECT_ROOT/scripts/publish-images.sh
 
