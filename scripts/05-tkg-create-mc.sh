@@ -18,3 +18,4 @@ PROJECT_ROOT=${PROJECT_ROOT:-$(cd $SCRIPT_ROOT/..; pwd)}
 source $PROJECT_ROOT/.env
 
 tkg init --ui --bind $JUMPBOX_IP:9080 --browser none -v 10
+# tkg init -i vsphere --vsphere-controlplane-endpoint-ip 10.213.187.199 -p dev --ceip-participation false --name poc-mgmt --cni antrea -v 6
