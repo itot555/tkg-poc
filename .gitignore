@@ -1,6 +1,8 @@
 .env
+.kube
+.kube-tkg
 .kubeconfig
-.tkg/
+.tkg
 *.kubeconfig
 certs/
 data/
