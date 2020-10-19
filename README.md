@@ -124,19 +124,20 @@ Add private/internal CA to the plans
 
 1.  Copy CA certificate and overlay files to`~/.tkg/providers/infrastructure/vsphere/ytt` directory
     ```
-    cp $PROJECT_ROOT/overlay/providers/infrastructure-vsphere/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-vsphere/ytt/
-    cp $PROJECT_ROOT/overlay/providers/infrastructure-docker/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-docker/ytt/
+    cp $PROJECT_ROOT/overlay/providers/infrastructure-vsphere/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-vsphere/ytt/    
     ```
 
 # Setup TKG config using UI
-- Run GUI wizard to prepare TKG Config and deploy management cluster
-  ```
-  ./05-tkg-create-mc.sh
-  ```
-- Open a browser on Windows/Mac/Linux GUI
-- Follow the wizard until all the config steps are done
-
-
+1.  Run GUI wizard to prepare TKG Config and deploy management cluster
+    ```
+    ./05-tkg-create-mc.sh
+    ```
+1.  Open a browser on Windows/Mac/Linux GUI
+1.  Follow the wizard until all the config steps are done
+1.  Subsequently, you can run following to initialized the cluster, as you TKG config is setup by the wizard
+    ```    
+    tkg init -i vsphere --vsphere-controlplane-endpoint-ip $MGMT_API -p dev --ceip-participation true --name poc-mgmt --cni antrea -v 10
+    ```
 ## Guest Cluster: Shared Services
 
 ### Create 
