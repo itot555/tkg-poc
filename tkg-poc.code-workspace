@@ -1,16 +1,20 @@
 {
 	"folders": [
 		{
-			"path": "/home/ubuntu/.tkg"
-		},
-		{
-			"path": "/home/ubuntu/.kube-tkg"
-		},
-		{
-			"path": "/home/ubuntu/.kube"
-		},
-		{
+			"name": "poc",
 			"path": "."
+		},
+		{
+			"name": ".kube-tkg",
+			"path": "../../../.kube-tkg"
+		},
+		{
+			"name": ".kube",
+			"path": "../../../.kube"
+		},
+		{
+			"name": ".tkg",
+			"path": "../../../.tkg"
 		}
 	],
 	"settings": {}
