@@ -84,7 +84,7 @@ If you are going to use certificates signed by a private CA / corporate CA, copy
       - Edit `.env` and add following settings
 
         | Env Var                                     | Description                                                                                       |
-        | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+        | ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
         | CLIENT                                      | Chort client name. DNS compliant (no spacem, lowercase, no underscore)                            |
         | JUMPBOX_IP                                  | IP address of internet connected VM where images will be pulled and stores                        |
         | POC_DOMAIN                                  | Domain name sufix for POC  (Example: tkg-poc.corp.local)                                          |
@@ -98,20 +98,27 @@ If you are going to use certificates signed by a private CA / corporate CA, copy
         | GOCV_PASSWORD                               | vCenter password                                                                                  |
         | VMWUSER                                     | My VMware Username                                                                                |
         | VMWPASS                                     | My VMware Password                                                                                |
+        | MGMT_API                                    | Management Cluster - Kubernetes API / Control Plain VIP (Example: 192.168.1.100)                  |
+        | MGMT_LB_RANGE                               | Management Cluster - LoadBalancer Service IP Range (Example: 192.168.101-192.168.105)             |
+        | SHARED_API                                  | Shared Cluster - Kubernetes API / Control Plain VIP (Example: 192.168.1.106)                      |
+        | SHARED_LB_RANGE                             | Shared Cluster - LoadBalancer Service IP Range  (Example: 192.168.107-192.168.110)                |
+        | APPS_API                                    | Application Cluster - Kubernetes API / Control Plain VIP (Example: 192.168.1.111)                 |
+        | APPS_LB_RANGE                               | Application Cluster - LoadBalancer Service IP Range  (Example: 192.168.112-192.168.115)           |
+        
 
-1.  Init Jumpbox
+2.  Init Jumpbox
 
     ```
     02-init-jumpbox.sh
     ```
 
-1.  Run registry on jumpbox
+3.  Run registry on jumpbox
 
     ```
     03-run-registry.sh
     ```
 
-1.  Migrate images
+4.  Migrate images
 
     ```
     04-migrate-tkg-images.sh
@@ -147,7 +154,7 @@ Add private/internal CA to the plans
   - Provide Guest Cluster Name and Endpoint VIP ip in arguments
 
   ```
-  ./06-tkg-create-guest-cluster.sh poc-shared 10.213.187.198
+  ./06-tkg-create-guest-cluster.sh poc-shared $SHARED_API
   ```
 
 ### In Cluster Services
@@ -170,7 +177,7 @@ Add private/internal CA to the plans
   - Provide Guest Cluster Name and Endpoint VIP ip in arguments
 
   ```
-  ./06-tkg-create-guest-cluster.sh poc-apps 10.213.187.197
+  ./06-tkg-create-guest-cluster.sh poc-apps $APP_API
   ```
 
 ### In Cluster Services
