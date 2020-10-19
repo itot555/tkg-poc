@@ -1,0 +1,21 @@
+#@ load("@ytt:overlay", "overlay")
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"})
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+spec:
+  template:
+    spec:   
+      #@overlay/match missing_ok=True 
+      files:
+      - content: |
+          -----BEGIN CERTIFICATE-----
+          <CA CERTIFICATE>
+          -----END CERTIFICATE-----
+        owner: root:root
+        path: /etc/ssl/certs/internal-ca.pem
+      preKubeadmCommands:
+      #! Download and run Harbor config script
+      #@overlay/append
+      - /usr/bin/rehash_ca_certificates.sh
+
