@@ -19,13 +19,22 @@ source $PROJECT_ROOT/.env
 
 echo "Read description in the $PROJECT_ROOT/README.md"
 
-read -p " Enter value for client name [CLIENT]: " CLIENT
-read -p " Enter value for jumpbox ip [JUMPBOX_IP]: " JUMPBOX_IP
-read -p " Enter value for poc domain [POC_DOMAIN]: " POC_DOMAIN
-read -p " Enter value for root domain [ROOT_DOMAIN]: " ROOT_DOMAIN
-read -p " Enter value for vcenter URL [GOVC_URL]: " GOVC_URL
-read -p " Enter value for vcenter username [GOVC_USERNAME]: " GOVC_USERNAME
-read -p " Enter value for vcenter password [GOCV_PASSWORD]: " GOCV_PASSWORD
+read -p "                                                      Client Name: " CLIENT
+read -p "                                                       Jumpbox IP: " JUMPBOX_IP
+read -p "                                                       POC Domain: " POC_DOMAIN
+read -p "                                                      Root Domain: " ROOT_DOMAIN
+read -p "                                                      vCenter URL: " GOVC_URL
+read -p "                                                 vCenter username: " GOVC_USERNAME
+read -p "                                                 vCenter password: " GOCV_PASSWORD
+read -p "          My VMWare User ID (Example: yogendrarampuria@gmail.com): " VMWUSER
+read -p "                            My VMware Password (Example: s3cr3t1): " VMWPASS
+read -p "               SHARED cluster K8s API IP (Example: 192.168.1.100): " MGMT_API
+read -p "Management cluster LB IP Range (Example: 192.168.101-192.168.105): " MGMT_LB_RANGE
+read -p "               SHARED cluster K8s API IP (Example: 192.168.1.106): " SHARED_API
+read -p "    SHARED cluster LB IP Range (Example: 192.168.107-192.168.110): " SHARED_LB_RANGE
+read -p "                  APP cluster K8s API IP (Example: 192.168.1.111): " APPS_API
+read -p "       APP cluster LB IP Range (Example: 192.168.112-192.168.115): " APPS_LB_RANGE
+
 
 cat <<EOF  > $PROJECT_ROOT/.env
 CLIENT=$CLIENT
@@ -39,6 +48,14 @@ GOVC_URL=$GOVC_URL
 GOVC_INSECURE=true
 GOVC_USERNAME=$GOVC_USERNAME
 GOCV_PASSWORD=$GOCV_PASSWORD
+VMWUSER=$VMWUSER
+VMWPASS=$VMWPASS
+MGMT_API=$MGMT_API
+MGMT_LB_RANGE=$MGMT_LB_RANGE
+SHARED_API=$SHARED_API
+SHARED_LB_RANGE=$SHARED_LB_RANGE
+APPS_API=$APPS_API
+APPS_LB_RANGE=$APPS_LB_RANGE
 EOF
 
 
