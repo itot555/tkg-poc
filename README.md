@@ -1,6 +1,5 @@
 # TKG PoC
 
-
 This is a guide to setup a TKG environment with couple of clusters. 
 
 It assumes:
@@ -15,7 +14,9 @@ It assumes:
 - tkg extensions
 - crash diagnostics
 - OVA files 
-- mkcert  
+- curl
+- wget
+- mkcert  (Optional) - Required if not internal/corporrate CA certificates given
   ```
   curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > $PROJECT_ROOT/bin/mkcert; chmod a+x $PROJECT_ROOT/bin/mkcert
   mkcert -install
@@ -44,11 +45,24 @@ At this point you should go to terminal/shell of you jumpbox and follow the the 
 ```
 git clone https://github.com/yogendra/tkg-poc ~/tkg-poc
 cd ~/tkg-poc
+direnv allow
 ```
 
 ## Copy packages
 
 All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packages. You can use any preferred method(WinSCP/Mac Finder SSH connection/Filezilla)
+
+**TODO/WIP**
+1. Automate this with vmw-cli
+1. Automate vCenter Tasks 
+   1. Use creation 
+   2. Permissin assignments
+   3. OVA deploy  
+   4. template conversion
+
+## Corporate/Private CA
+
+If you are going to use certificates signed by a private CA / corporate CA, copy its certificate to `$PROJECT_ROOT/certs/ca.crt`
 
 ## Jumpbox Preparations
 
@@ -82,6 +96,8 @@ All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packag
         | GOVC_INSECURE                               | State true if vcenter  is using private CA certs                                                  |
         | GOVC_USERNAME                               | vCenter username (Example: administrator@vsphere.local)                                           |
         | GOCV_PASSWORD                               | vCenter password                                                                                  |
+        | VMWUSER                                     | My VMware Username                                                                                |
+        | VMWPASS                                     | My VMware Password                                                                                |
 
 1.  Init Jumpbox
 
@@ -104,74 +120,15 @@ All the downloaded packages, not OVA files, should be copied to ~/tkg-poc/packag
 
 ## Prepare TKG Config
 
-
 Add private/internal CA to the plans
 
-Edit `$HOME/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
+1.  Copy CA certificate and overlay files to`~/.tkg/providers/infrastructure/vsphere/ytt` directory
+    ```
+    cp $PROJECT_ROOT/overlay/providers/infrastructure-vsphere/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-vsphere/ytt/
+    ```
 
-1.  Update controle-plane template
-   
-    - Look for object with following begining
-
-      ```
-      apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
-      kind: KubeadmControlPlane
-      metadata:
-        name: '${ CLUSTER_NAME }-control-plane'
-        namespace: '${ NAMESPACE }'
-      ```
-    - Add ca cert using `files`
-     
-        ```
-              - content: |
-                  -----BEGIN CERTIFICATE-----
-                  <CA CERTIFICATE>
-                  -----END CERTIFICATE-----
-                owner: root:root
-                path: /etc/ssl/certs/internal-ca.pem
-        ```
-    - Update `preKubeadmCommands`
-      - Add rehash commands
-      - Add containerd restart
-
-        ```
-            preKubeadmCommands:
-            - hostname "{{ ds.meta_data.hostname }}"
-            - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
-            - echo "127.0.0.1   localhost" >>/etc/hosts
-            - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
-            - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
-            - /usr/bin/rehash_ca_certificates.sh
-        ```
-2.  Update worker template
-    - Look for object with following begining
-      ```
-      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
-      kind: KubeadmConfigTemplate
-      metadata:
-        name: '${ CLUSTER_NAME }-md-0'
-        namespace: '${ NAMESPACE }'
-      ```
-    - Add ca cert and prekubeadm commands
-      ```
-            files:
-            - content: |
-                -----BEGIN CERTIFICATE-----
-                <CA CERTIFICATE>
-                -----END CERTIFICATE-----
-              owner: root:root
-              path: /etc/ssl/certs/internal-ca.pem  
-            preKubeadmCommands:
-            - hostname "{{ ds.meta_data.hostname }}"
-            - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
-            - echo "127.0.0.1   localhost" >>/etc/hosts
-            - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
-            - echo "{{ ds.meta_data.hostname }}" >/etc/hostname          
-            - /usr/bin/rehash_ca_certificates.sh
-      ```
-     
 # Setup TKG config using UI
-- Run GUI wizard to prepare `~/.tkg/config.yaml`
+- Run GUI wizard to prepare TKG Config and deploy management cluster
   ```
   ./05-tkg-create-mc.sh
   ```
@@ -179,17 +136,19 @@ Edit `$HOME/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
 - Follow the wizard until all the config steps are done
 
 
-# Create Guest Cluster
+## Guest Cluster: Shared Services
+
+### Create 
 
 - On the shell run following command to create a guest cluster
 
-  - Provide Guset Cluster Name and Endpoint VIP ip in arguments
+  - Provide Guest Cluster Name and Endpoint VIP ip in arguments
 
   ```
-  ./06-tkg-create-guest-cluster.sh tkg-cluster-1 10.213.187.198
+  ./06-tkg-create-guest-cluster.sh poc-shared 10.213.187.198
   ```
 
-# Prepare Shared Cluster
+### In Cluster Services
 
 - Storage Class  
 - Metal LB
@@ -199,27 +158,33 @@ Edit `$HOME/.tkg/providers/infrastructure-vsphere/v0.7.1/ytt/base-template.yaml`
 - DEX (Optional)
 - ELK (Optional)
 
-# Prepare Apps Cluster
+
+## Guest Cluster: Applications
+
+### Create 
+
+- On the shell run following command to create a guest cluster
+
+  - Provide Guest Cluster Name and Endpoint VIP ip in arguments
+
+  ```
+  ./06-tkg-create-guest-cluster.sh poc-apps 10.213.187.197
+  ```
+
+### In Cluster Services
 
 - Storage Class  
 - Metal LB
 - Cert Manager
 - Contour
-- Gangway
-- Fluent-bit
-- Cert Manager
-- Contour
-
-# Install Applications
+- Fluentbit
 
 
+## Componenet Deployment 
+
+### MetalLB
 
 
-MetalLB
 Create random secret
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
 
-
-
-
-grep -RiIl 'registry.tkg.vmware.run' | xargs sed -i "s/registry.tkg.vmware.run/$TKG_CUSTOM_IMAGE_REPOSITORY/g"
