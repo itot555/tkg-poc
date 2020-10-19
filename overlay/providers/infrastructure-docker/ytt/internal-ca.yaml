@@ -10,11 +10,12 @@ spec:
       #@overlay/append
       - content: #@ data.read("ca.crt")
         owner: root:root
-        path: /etc/ssl/certs/internal-ca.pem
+        path: /usr/local/share/ca-certificates/internal-ca.pem
     preKubeadmCommands:
       #! Download and run Harbor config script
       #@overlay/append
-      - /usr/bin/rehash_ca_certificates.sh
+      - update-ca-certificates
+      - systemctl restart containerd
  
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"})
 ---
@@ -27,8 +28,9 @@ spec:
       files:
         - content: #@ data.read("ca.crt")          
           owner: root:root
-          path: /etc/ssl/certs/internal-ca.pem
+          path: /usr/local/share/ca-certificates/internal-ca.pem
       preKubeadmCommands:
         #! Download and run Harbor config script
         #@overlay/append
-        - /usr/bin/rehash_ca_certificates.sh
+        - update-ca-certificates
+        - systemctl restart containerd

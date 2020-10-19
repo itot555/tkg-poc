@@ -125,6 +125,7 @@ Add private/internal CA to the plans
 1.  Copy CA certificate and overlay files to`~/.tkg/providers/infrastructure/vsphere/ytt` directory
     ```
     cp $PROJECT_ROOT/overlay/providers/infrastructure-vsphere/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-vsphere/ytt/
+    cp $PROJECT_ROOT/overlay/providers/infrastructure-docker/ytt/internal-ca.yaml $PROJECT_ROOT/certs/ca.crt ~/.tkg/providers/infrastructure-docker/ytt/
     ```
 
 # Setup TKG config using UI
