@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "/home/ubuntu/.tkg"
+		},
+		{
+			"path": "/home/ubuntu/.kube-tkg"
+		},
+		{
+			"path": "/home/ubuntu/.kube"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
