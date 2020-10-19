@@ -17,21 +17,13 @@ SCRIPT_ROOT=$( cd `dirname $0`; pwd)
 PROJECT_ROOT=${PROJECT_ROOT:-$(cd $SCRIPT_ROOT/..; pwd)}
 source $PROJECT_ROOT/.env
 
-EXTRA_HOSTS=${1-$(hostname)}
 
-IP=$JUMPBOX_IP
-BIND_ADDRESS=$IP:7777
-URL=http://$BIND_ADDRESS
-ACCEPTED_HOSTS=$IP,127.0.0.1,localhost,$EXTRA_HOSTS 
+yaml=${1?"YAML File missing"}
+cat $yaml | grep image:\  | awk {'print $2'} |  while read image
+do
+  echo Migrating $helmchart::$image
+  $local_image=$(migrate-image $image)
 
-nohup octant \
-  --enable-feature-applications \
-  --enable-opencensus \
-  --listener-addr $BIND_ADDRESS \
-  --disable-open-browser \
-  --ui-url $URL \
-  --accepted-hosts $ACCEPTED_HOSTS \
-  --kubeconfig $KUBECONFIG \
-  &> /tmp/octant.log  & disown
+done
 
-echo Open $URL in your browser
+
