@@ -20,8 +20,8 @@ source $PROJECT_ROOT/.env
 EXTRA_HOSTS=${1-$(hostname)}
 
 IP=$JUMPBOX_IP
-BIND_ADDRESS=$IP:7777
-URL=http://$BIND_ADDRESS
+BIND_ADDRESS=0.0.0.0:7777
+URL=http://$JUMPBOX_IP:7777
 ACCEPTED_HOSTS=$IP,127.0.0.1,localhost,$EXTRA_HOSTS 
 
 nohup octant \
@@ -29,8 +29,6 @@ nohup octant \
   --enable-opencensus \
   --listener-addr $BIND_ADDRESS \
   --disable-open-browser \
-  --ui-url $URL \
-  --accepted-hosts $ACCEPTED_HOSTS \
   --kubeconfig $KUBECONFIG \
   &> /tmp/octant.log  & disown
 
