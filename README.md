@@ -18,12 +18,15 @@ It assumes:
 - wget
 - mkcert  (Optional) - Required if not internal/corporrate CA certificates given
   ```
-  curl -sSL https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 > $PROJECT_ROOT/bin/mkcert; chmod a+x $PROJECT_ROOT/bin/mkcert
+  curl -L https://github.com/FiloSottile/mkcert/releases/download/v1.4.1/mkcert-v1.4.1-linux-amd64 \
+    -o $PROJECT_ROOT/bin/mkcert; chmod a+x $PROJECT_ROOT/bin/mkcert
   mkcert -install
   ```  
 - octant
   ```
-  curl -sSL https://github.com/vmware-tanzu/octant/releases/download/v0.16.1/octant_0.16.1_Linux-64bit.tar.gz  |  tar  --strip-components 1  -C $PROJECT_ROOT/bin -xzvf - octant_0.16.1_Linux-64bit/octant  &&  chmod a+x $PROJECT_ROOT/bin/octant
+  curl -L https://github.com/vmware-tanzu/octant/releases/download/v0.16.1/octant_0.16.1_Linux-64bit.tar.gz \
+    | tar  --strip-components 1  -C $PROJECT_ROOT/bin -xzvf - octant_0.16.1_Linux-64bit/octant  \
+    &&  chmod a+x $PROJECT_ROOT/bin/octant
   ```
 
 # Prepare vSphere Environment
@@ -153,10 +156,13 @@ Add private/internal CA to the plans
 
   - Provide Guest Cluster Name and Endpoint VIP ip in arguments
 
+    ```
+    06-tkg-create-guest-cluster.sh poc-shared $SHARED_API
+    ```
+- Get Kubernetes cluster credentials
   ```
-  ./06-tkg-create-guest-cluster.sh poc-shared $SHARED_API
+  tkg get credentials poc-shared 
   ```
-
 ### In Cluster Services
 
 - Storage Class  
@@ -179,7 +185,10 @@ Add private/internal CA to the plans
   ```
   ./06-tkg-create-guest-cluster.sh poc-apps $APP_API
   ```
-
+- Get Kubernetes cluster credentials
+  ```
+  tkg get credentials poc-apps 
+  ```
 ### In Cluster Services
 
 - Storage Class  
