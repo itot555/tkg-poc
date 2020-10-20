@@ -30,8 +30,12 @@ It assumes:
   ```
 - k9s
   ```
-  curl -sSL https://github.com/derailed/k9s/releases/download/v0.22.1/k9s_Linux_x86_64.tar.gz | tar -C $PROJECT_ROOT/bin -xz k9s ; chmod a+x $PROJECT_ROOT/bin/k9s`
-  ```  
+  curl -sSL https://github.com/derailed/k9s/releases/download/v0.22.1/k9s_Linux_x86_64.tar.gz | tar -C $PROJECT_ROOT/bin -xz k9s ; chmod a+x $PROJECT_ROOT/bin/k9s
+  ```
+- dive
+  ```
+  curl -sSL https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C $PROJECT_ROOT/bin -xz div ; chmod a+x $PROJECT_ROOT/bin/dive
+  ```
 
 # Prepare vSphere Environment
 Follow instruction on official documentation to prepare vSphere for TKG installation
