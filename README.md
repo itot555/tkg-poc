@@ -87,7 +87,7 @@ If you are going to use certificates signed by a private CA / corporate CA, copy
       - Edit `.env` and add following settings
 
         | Env Var                                     | Description                                                                                       |
-        | ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+        | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
         | CLIENT                                      | Chort client name. DNS compliant (no spacem, lowercase, no underscore)                            |
         | JUMPBOX_IP                                  | IP address of internet connected VM where images will be pulled and stores                        |
         | POC_DOMAIN                                  | Domain name sufix for POC  (Example: tkg-poc.corp.local)                                          |
@@ -140,7 +140,7 @@ Add private/internal CA to the plans
 # Setup TKG config using UI
 1.  Run GUI wizard to prepare TKG Config and deploy management cluster
     ```
-    ./05-tkg-create-mc.sh
+    05-tkg-create-mc.sh
     ```
 1.  Open a browser on Windows/Mac/Linux GUI
 1.  Follow the wizard until all the config steps are done
