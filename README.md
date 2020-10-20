@@ -34,7 +34,7 @@ It assumes:
   ```
 - dive
   ```
-  curl -sSL https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C $PROJECT_ROOT/bin -xz div ; chmod a+x $PROJECT_ROOT/bin/dive
+  curl -sSL https://github.com/wagoodman/dive/releases/download/v0.9.2/dive_0.9.2_linux_amd64.tar.gz | tar -C $PROJECT_ROOT/bin -xz dive ; chmod a+x $PROJECT_ROOT/bin/dive
   ```
 
 # Prepare vSphere Environment
