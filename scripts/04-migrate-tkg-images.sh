@@ -19,6 +19,11 @@ source $PROJECT_ROOT/.env
 
 tkg get mc &>> /dev/null
 
+cat <<EOF >> $TKG_CONFIG
+TKG_CUSTOM_IMAGE_REPOSITORY=$TKG_CUSTOM_IMAGE_REPOSITORY
+TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY=$TKG_CUSTOM_IMAGE_REPOSITORY_SKIP_TLS_VERIFY
+EOF
+
 $PROJECT_ROOT/scripts/gen-publish-images.sh > $PROJECT_ROOT/scripts/publish-images.sh
 
 sh $PROJECT_ROOT/scripts/publish-images.sh
