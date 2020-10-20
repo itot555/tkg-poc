@@ -148,6 +148,22 @@ Add private/internal CA to the plans
     ```    
     tkg init -i vsphere --vsphere-controlplane-endpoint-ip $MGMT_API -p dev --ceip-participation true --name poc-mgmt --cni antrea -v 10
     ```
+1.  (Optional) Troubleshoot/monitor bootstrap cluster:
+    - Open a new terminal
+    - Goto Project root
+    - Get KIND config
+      ```
+      kind get kubeconfig --name `kind get clusters | grep tkg-kind | top -1` > $PROJECT_ROOT/bootstrap.kubeconfig
+      ```
+    - Set bootstarp kubeconfig as the current kubernetes config
+      ```
+      export KUBECONFIG=$PROJECT_ROOT/bootstrap.kubeconfig
+      ``` 
+    - Run any kubernetes command to monitor. 
+    - Example: Get Pods list and watch it
+      ```
+      kubectl get po -A -w
+      ```
 ## Guest Cluster: Shared Services
 
 ### Create 
