@@ -153,7 +153,7 @@ Add private/internal CA to the plans
     - Goto Project root
     - Set bootstrap KIND kubernetes cluster config as the `KUBECONFIG` for the shell
       ```
-      export KUBECONFIG=$HOME/.kube-tkg/tmp/`ls -1rt $HOME/.kube-tkg/tmp/config* | tail -1`
+      export KUBECONFIG=`ls -1rt $HOME/.kube-tkg/tmp/config* | tail -1`
       ```
     - Run any kubernetes command to monitor. 
     - Example: Get Pods list and watch it
