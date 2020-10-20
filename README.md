@@ -163,7 +163,7 @@ Add private/internal CA to the plans
 3.  (Optional) Monitor/Examing/Troubleshoot management cluster during initializatio:
     - Wait for Kind cluster to be fully initialized. Look for a log entry in the initialization output similar to following
       ``` 
-      Moving kubernetes config to /home/ubuntu/tkg-poc/.kubeconfig
+      Start Creating Management Cluster
       ```
     - Set management context
       ```
