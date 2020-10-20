@@ -148,10 +148,10 @@ Add private/internal CA to the plans
     ```    
     tkg init -i vsphere --vsphere-controlplane-endpoint-ip $MGMT_API -p dev --ceip-participation true --name poc-mgmt --cni antrea -v 10
     ```
-1.  (Optional) Troubleshoot/monitor bootstrap cluster:
+2.  (Optional) Monitor/Examine/Troubleshoot bootstrap cluster:
     - Open a new terminal
     - Goto Project root
-    - Get KIND config
+    - Get KIND kubernetes config
       ```
       kind get kubeconfig --name `kind get clusters | grep tkg-kind | top -1` > $PROJECT_ROOT/bootstrap.kubeconfig
       ```
@@ -159,6 +159,19 @@ Add private/internal CA to the plans
       ```
       export KUBECONFIG=$PROJECT_ROOT/bootstrap.kubeconfig
       ``` 
+    - Run any kubernetes command to monitor. 
+    - Example: Get Pods list and watch it
+      ```
+      kubectl get po -A -w
+      ```
+3.  (Optional) Monitor/Examing/Troubleshoot management cluster during initializatio:
+    - Wait for Kind cluster to be fully initialized. Look for a log entry in the initialization output similar to following
+      ```
+      ```
+    - Set management cluster's temporaty kubeconfig as the current kubernetes config
+      ```
+      export KUBECONFIG=$HOME/.kube-tkg/tmp/`ls -1rt $HOME/.kube-tkg/tmp/config* | tail -1`      
+      ```
     - Run any kubernetes command to monitor. 
     - Example: Get Pods list and watch it
       ```
