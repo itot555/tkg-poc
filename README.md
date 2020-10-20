@@ -151,14 +151,10 @@ Add private/internal CA to the plans
 2.  (Optional) Monitor/Examine/Troubleshoot bootstrap cluster:
     - Open a new terminal
     - Goto Project root
-    - Get KIND kubernetes config
+    - Set bootstrap KIND kubernetes cluster config as the `KUBECONFIG` for the shell
       ```
-      kind get kubeconfig --name `kind get clusters | grep tkg-kind | top -1` > $PROJECT_ROOT/bootstrap.kubeconfig
+      export KUBECONFIG=$HOME/.kube-tkg/tmp/`ls -1rt $HOME/.kube-tkg/tmp/config* | tail -1`
       ```
-    - Set bootstarp kubeconfig as the current kubernetes config
-      ```
-      export KUBECONFIG=$PROJECT_ROOT/bootstrap.kubeconfig
-      ``` 
     - Run any kubernetes command to monitor. 
     - Example: Get Pods list and watch it
       ```
@@ -166,16 +162,21 @@ Add private/internal CA to the plans
       ```
 3.  (Optional) Monitor/Examing/Troubleshoot management cluster during initializatio:
     - Wait for Kind cluster to be fully initialized. Look for a log entry in the initialization output similar to following
+      ``` 
+      Moving kubernetes config to /home/ubuntu/tkg-poc/.kubeconfig
       ```
+    - Set management context
       ```
-    - Set management cluster's temporaty kubeconfig as the current kubernetes config
-      ```
-      export KUBECONFIG=$HOME/.kube-tkg/tmp/`ls -1rt $HOME/.kube-tkg/tmp/config* | tail -1`      
+      kubectl config use-context poc-mgmt-admin@poc-mgmt
       ```
     - Run any kubernetes command to monitor. 
     - Example: Get Pods list and watch it
       ```
       kubectl get po -A -w
+      ```
+    - SSH into a cluster VM. If you have provided default RSA publisc key during initialization `~/.ssh/id_rsa.pub` then you can use:
+      ```
+      ssh -i ~/.ssh/id_rsa capv@<IP Address>
       ```
 ## Guest Cluster: Shared Services
 
