@@ -28,6 +28,10 @@ It assumes:
     | tar  --strip-components 1  -C $PROJECT_ROOT/bin -xzvf - octant_0.16.1_Linux-64bit/octant  \
     &&  chmod a+x $PROJECT_ROOT/bin/octant
   ```
+- k9s
+  ```
+  curl -sSL https://github.com/derailed/k9s/releases/download/v0.22.1/k9s_Linux_x86_64.tar.gz | tar -C $PROJECT_ROOT/bin -xz k9s ; chmod a+x $PROJECT_ROOT/bin/k9s`
+  ```  
 
 # Prepare vSphere Environment
 Follow instruction on official documentation to prepare vSphere for TKG installation
