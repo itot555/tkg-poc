@@ -266,8 +266,43 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
     grep -RiIl --color=never --include=\*.yaml  'projects.registry.vmware.com' $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1 | xargs sed -i "s/projects.registry.vmware.com/$LOCAL_REGISTRY/g"
     ```
 
+
+### Install Extensions
+
+
+#### TMC Extension Manager
+
+- Install TMC Extentions manager
+
+  ```
+  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/extensions/tmc-extension-manager.yaml
+  ```
+
+- Install Kapp Controller
+
+  ```
+  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/extensions/kapp-controller.yaml
+  ```
+- Install Cert Manager
+  ```
+  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/cert-manager/
+  ```
+- Install Metal LB
+  - Image relocate
+  - Update yaml
+  - Apply Yaml
+
+
+- Install Contour
+  - Namespace Role
+  - Countour
+--
 ### MetalLB
 
-Create random secret
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
 
+
+Create random secret
+
+```
+kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
+```
