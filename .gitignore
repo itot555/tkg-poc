@@ -11,5 +11,5 @@ registry/
 scripts/publish-images.sh
 tkg-config.yaml
 tmp.*
-pacakges/
+packages/
 apps/
