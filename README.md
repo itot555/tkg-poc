@@ -250,7 +250,7 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
     This will create a folder `tkg-extensions-v1.2.0+vmware.1` with all the manifests files in it
 3.  Relocate TKG images
     ```
-    grep -RiIl --color=never --include=\*.yaml  'projects.registry.vmware.com' $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1 \
+    grep -RiIl --color=never --include=\*.yaml  'projects.registry.vmware.com' $EXTENSION_ROOT \
         | xargs -I yamlfile grep projects.registry.vmware.com yamlfile \
         | awk {'print $2'} \
         | while read image \
@@ -263,7 +263,7 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
 4.  Update image references in the extensions to your LOCAL_REGISTRY
     
     ```
-    grep -RiIl --color=never --include=\*.yaml  'projects.registry.vmware.com' $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1 | xargs sed -i "s/projects.registry.vmware.com/$LOCAL_REGISTRY/g"
+    grep -RiIl --color=never --include=\*.yaml  'projects.registry.vmware.com' $EXTENSION_ROOT | xargs sed -i "s/projects.registry.vmware.com/$LOCAL_REGISTRY/g"
     ```
 
 
@@ -275,29 +275,38 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
 - Install TMC Extentions manager
 
   ```
-  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/extensions/tmc-extension-manager.yaml
+  k apply -f $EXTENSION_ROOT/extensions/tmc-extension-manager.yaml
   ```
 
 - Install Kapp Controller
 
   ```
-  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/extensions/kapp-controller.yaml
+  k apply -f $EXTENSION_ROOT/extensions/kapp-controller.yaml
   ```
 - Install Cert Manager
   ```
-  k apply -f $PROJECT_ROOT/packages/tkg-extensions-v1.2.0+vmware.1/cert-manager/
+  k apply -f $EXTENSION_ROOT/cert-manager/
   ```
 - Install Metal LB
-  - Image relocate
-    ```
-
-  - Update yaml
-  - Apply Yaml
-
-
+ 
 - Install Contour
   - Namespace Role
-  - Countour
+    ```
+    k apply -f $EXTENSION_ROOT/extensions/ingress/contour/namespace-role.yaml
+    ```
+  - Create data values
+    ```
+    cp $EXTENSION_ROOT/extensions/ingress/contour/vsphere/contour-data-values.yaml.example \
+     $EXTENSION_ROOT/extensions/ingress/contour/vsphere/contour-data-values.yaml
+    ```
+  - Create data value obejct
+    ```
+    kubectl create secret generic contour-data-values --from-file=values.yaml=$EXTENSION_ROOT/extensions/ingress/contour/vsphere/contour-data-values.yaml -n tanzu-system-ingress
+    ```
+  - Deploy Contour
+    ```
+    kubectl apply -f $EXTENSION_ROOT/extensions/ingress/contour/contour-extension.yaml
+    ```
 --
 ### MetalLB
 
