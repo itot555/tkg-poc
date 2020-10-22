@@ -289,6 +289,8 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
   ```
 - Install Metal LB
   - Image relocate
+    ```
+
   - Update yaml
   - Apply Yaml
 
@@ -300,9 +302,53 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
 ### MetalLB
 
 
+Follow instructions at [MetalLB Doc](https://metallb.universe.tf/installation/)
 
-Create random secret
+- Enable strict ARP
+  ```
+  kubectl get configmap kube-proxy -n kube-system -o yaml | \
+    sed -e "s/strictARP: false/strictARP: true/" | \
+    kubectl apply -f - -n kube-system
+  ```
+- Relocate Images
+  ```
+  migrate-image metallb/speaker:main ${LOCAL_REGISTRY}/metallb/speaker:main
+  migrate-image metallb/controller:main ${LOCAL_REGISTRY}/metallb/controller:main
+  ```
+- Update deployment manifest
+  In `$PROJECT_ROOT/deployments/metallb/02-deployment.yaml` update image reference to use the local registry
+  ```
+  sed -i "s#image: metallb/speaker:main#image: ${LOCAL_REGISTRY}/metallb/speaker:main#"   $PROJECT_ROOT/deployments/metallb/02-deployment.yaml
+  sed -i "s#image: metallb/controller:main#image: ${LOCAL_REGISTRY}/metallb/controller:main#"   $PROJECT_ROOT/deployments/metallb/02-deployment.yaml
+  ```
+- Create Namespace
+  ```
+  k apply -f $PROJECT_ROOT/deployments/metallb/01-namespace.yaml`
+  ```
+- Update metallb config `clusters/<cluster>/metallb/config.yaml
+  - Update the address pool for the LB IPs
+  - Create ConfigMap
+    ```
+    k create cm -n metallb-system  config --from-file=config=$PROJECT_ROOT/clusters/<cluster>/metallb/config.yaml
+    ```
+    - Management
+      ```
+      k create cm -n metallb-system  config --from-file=config=$PROJECT_ROOT/clusters/mgmt/metallb/config.yaml
+      ```
+    - Shared
+      ```
+      k create cm -n metallb-system  config --from-file=config=$PROJECT_ROOT/clusters/shared/metallb/config.yaml
+      ```
+    - Apps
+      ```
+      k create cm -n metallb-system  config --from-file=config=$PROJECT_ROOT/clusters/apps/metallb/config.yaml
+      ```
+- Create MetalLB secret
+  ```
+  k create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" 
+  ```
 
-```
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" -o yaml --dry-run=client > metallb/02-secret-emberlist.yaml
-```
+- Deploy metallb
+  ```
+  k apply -f $PROJECT_ROOT/deployments/metallb/02-deployment.yaml
+  ```
