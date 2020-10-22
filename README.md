@@ -323,7 +323,7 @@ Follow instructions at [MetalLB Doc](https://metallb.universe.tf/installation/)
   ```
 - Create Namespace
   ```
-  k apply -f $PROJECT_ROOT/deployments/metallb/01-namespace.yaml`
+  k apply -f $PROJECT_ROOT/deployments/metallb/01-namespace.yaml
   ```
 - Update metallb config `clusters/<cluster>/metallb/config.yaml
   - Update the address pool for the LB IPs
