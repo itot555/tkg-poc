@@ -1,0 +1,18 @@
+global:
+  storageClass: default
+harborAdminPassword: VMware1!
+ingress:
+  enabled: true
+  host:
+    core: harbor.corp.local
+    notary: notary.corp.local
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+service:
+  type: ClusterIP
+  tls:
+    notaryExistingSecret: notary-tls
+caBundleSecretName: internal-ca-tls
