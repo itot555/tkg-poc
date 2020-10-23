@@ -267,7 +267,72 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
     ```
 
 
-### Install Extensions
+
+
+
+
+
+## Install Cert Manager
+
+Use Helm
+```
+migrate-images-helm  jetstack/cert-manager
+```
+Create Self sign CA
+
+## Install Contour
+
+Migrate Images
+```
+migrate-images-helm  bitnami/contour
+```
+Install Contour
+```
+k create ns contour
+```
+Deploy contour
+```
+helm -n contour  install contour bitnami/contour \
+  --set global.imageRegistry=10.172.16.5:5000 \
+  --set fullnameOverride=contour \
+  --set envoy.service.type=LoadBalancer 
+```
+
+## Install Harbor
+
+Migrate Images
+```
+migrate-images-helm  bitnami/harbor
+```
+Create Namespace
+
+```
+k create ns harbor
+```
+
+Create ineternal CA cert
+```
+k create -n harbor  secret generic  internal-ca-tls --from-file=ca.crt=$PROJECT_ROOT/certs/ca.crt 
+```
+Install chart
+
+```
+helm -n harbor install \
+  harbor bitnami/harbor \
+  -f $PROJECT_ROOT/deployments/harbor-values.yaml \
+  --set ingress.host.core=harbor.$POC_DOMAIN \
+  --set ingress.host.notary=notary.$POC_DOMAIN \
+  --set global.imageRegistry=$LOCAL_REGISTRY
+
+```
+
+
+## Install EFK
+
+
+
+### WIP Install Extensions
+
 
 
 #### TMC Extension Manager
@@ -301,11 +366,11 @@ Refer to [Shared Services and Extension Setup Guide][tkg-1-2-extensions-doc] for
     ```
   - Create data value obejct
     ```
-    kubectl create secret generic contour-data-values --from-file=values.yaml=$EXTENSION_ROOT/extensions/ingress/contour/vsphere/contour-data-values.yaml -n tanzu-system-ingress
+    k create secret generic contour-data-values --from-file=values.yaml=$EXTENSION_ROOT/extensions/ingress/contour/vsphere/contour-data-values.yaml -n tanzu-system-ingress
     ```
   - Deploy Contour
     ```
-    kubectl apply -f $EXTENSION_ROOT/extensions/ingress/contour/contour-extension.yaml
+    k apply -f $EXTENSION_ROOT/extensions/ingress/contour/contour-extension.yaml
     ```
 --
 ### MetalLB
