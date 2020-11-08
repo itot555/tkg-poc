@@ -4,6 +4,6 @@
    ```
    kubectl config use-context poc-mgmt-admin@poc-mgmt
    ```
-2. Deploy TMC extension constoller
+2. Deploy TMC extension controller
 
 kubectl apply -f tmc-extension-manager.yaml
