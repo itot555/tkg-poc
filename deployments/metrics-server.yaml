@@ -194,7 +194,7 @@ spec:
       serviceAccountName: metrics-server
       containers:
         - name: metrics-server
-          image: "k8s.gcr.io/metrics-server-amd64:v0.3.6"
+          image: 10.172.16.5:5000/metrics-server-amd64:v0.3.6
           imagePullPolicy: IfNotPresent
           command:
             - /metrics-server
@@ -277,7 +277,7 @@ metadata:
 spec:
   containers:
   - name: wget
-    image: "busybox:latest"
+    image: 10.172.16.5:5000/library/busybox
     imagePullPolicy: IfNotPresent
     command: ['/bin/sh']
     args:

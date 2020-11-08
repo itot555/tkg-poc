@@ -310,7 +310,7 @@ spec:
             secretKeyRef:
               name: memberlist
               key: secretkey
-        image: metallb/speaker:main
+        image: 10.172.16.5:5000/metallb/speaker:main
         imagePullPolicy: Always
         name: speaker
         ports:
@@ -366,7 +366,7 @@ spec:
       - args:
         - --port=7472
         - --config=config
-        image: metallb/controller:main
+        image: 10.172.16.5:5000/metallb/controller:main
         imagePullPolicy: Always
         name: controller
         ports:

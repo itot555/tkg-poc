@@ -44,6 +44,7 @@ docker run \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
   -e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
   -p 5000:5000 \
+  -p 443:5000 \
   -d \
   registry:2
 

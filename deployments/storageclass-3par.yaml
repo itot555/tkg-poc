@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: 3par
+provisioner: kubernetes.io/vsphere-volume
+parameters: 
+  datastore: /3parDataStore
+  diskformat: thin
+  fstype: ext3

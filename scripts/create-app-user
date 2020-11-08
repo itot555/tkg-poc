@@ -1,0 +1,15 @@
+#!/bin/bash
+SCRIPT_NAME=$0
+SCRIPT_ROOT=$( cd `dirname $0`; pwd)
+PROJECT_ROOT=${PROJECT_ROOT:-$(cd $SCRIPT_ROOT/..; pwd)}
+source $PROJECT_ROOT/.env
+
+set -eo pipefail
+
+saname=${1?"Server Account Name Missing: $SCRIPT_NAME  <service-account> <namespace>"}
+namespace=${2?"Namespace Missing: $SCRIPT_NAME <service-account> <namespace>"}
+
+kubectl get ns ${namespaces} &> /dev/null || kubectl create ns ${namespace}
+kubectl create sa ${saname} -n ${namespace}
+kubectl create rolebinding ${saname}-admin --clusterrole=cluster-admin  --serviceaccount=${namespace}:${saname} -n ${namespace}
+kubectl create clusterrolebinding ${namespace}-${saname}-ro --clusterrole=view --serviceaccount=${namespace}:${saname}

@@ -13,3 +13,4 @@ tkg-config.yaml
 tmp.*
 packages/
 apps/
+privkey.pem
