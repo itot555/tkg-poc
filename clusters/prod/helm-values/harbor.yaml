@@ -1,0 +1,28 @@
+externalURL: https://harbor.poc.telenorbank.local
+fullnameOverride: harbor
+global:
+  storageClass: vsphere-3par
+caBundleSecretName: internal-ca-tls
+harborAdminPassword: VMware1!
+ingress:
+  enabled: true
+  hosts:
+    core: harbor.poc.telenorbank.local
+    notary: notary.poc.telenorbank.local
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+persistence:
+  persistentVolumeClaim:
+    registry:
+      size: 100Gi
+    chartmuseum:
+      size: 50Gi
+    trivy:
+      size: 10Gi    
+service:
+  type: ClusterIP
+  tls:
+    notaryExistingSecret: notary-tls

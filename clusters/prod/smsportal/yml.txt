@@ -1,0 +1,59 @@
+# application-prod.yml
+server:
+  port: 9999
+
+logging:
+  path: ./logs
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+  jackson:
+    time-zone: Asia/Karachi
+  batch:
+    job:
+      enabled: false
+  application:
+    name: Sms_Portal
+
+  datasource:
+    url: jdbc:mysql://nsdb.telenorbank.local/smsportal?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    platform: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: smsportal
+    password: EPsmsportal@1
+    initialization-mode: never
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: false
+      connection-timeout: 30000
+      minimum-idle: 10
+      type: com.zaxxer.hikari.HikariDataSource
+  rabbitmq:
+    username: admin
+    password: Rabbitmq123
+    listener:
+      simple:
+        concurrency: 20
+    virtual-host: ngw
+    addresses: 10.172.0.67:5672,10.172.0.68:5672
+
+app:
+  shellScriptPath: /u01/appservice/sms_portal_files
+
+filePath: /u01/appservice/sms_portal_files/portal-upload
+
+scheduler:
+  notification:
+    batch-size: 500
+zipfile:/u01/appservice/sms_portal/smsportal-0.0.1-SNAPSHOT.jar::BOOT-INF/classes/application-prod.yml            56,1           Bot
+BOOT-INF/classes/application-prod.yml
+                     

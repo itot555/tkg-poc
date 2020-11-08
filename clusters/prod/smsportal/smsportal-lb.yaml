@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: smsportal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smsportal
+  template:
+    metadata:
+      labels:
+        app: smsportal
+        version: "0.0.1"
+    spec:
+      containers:
+        - image: 10.172.16.5:5000/smsportalgmt:latest
+          name: smsportal
+          ports:
+          - containerPort: 9999
+            name: http
+          volumeMounts:
+          - mountPath: /home/logs
+            name: host-volume          
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 4000Mi
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+      
+      volumes:
+        - name: host-volume
+          persistentVolumeClaim:
+            claimName: smsportal-logs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smsportal
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: http
+    nodePort: 30080
+    name: http
+  selector:
+    app: smsportal
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: smsportal  
+  labels:
+    app: smsportal
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: smsportal-tls
+      hosts:
+        - smsportal.poc.telenorbank.local
+        - 
+  rules:
+    - host: "*"
+      http:
+        paths:
+          - backend:
+              serviceName: smsportal
+              servicePort: http
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smsportal-logs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

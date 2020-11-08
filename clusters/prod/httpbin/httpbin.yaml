@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: httpbin-non-root
+  name: httpbin-non-root
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin-non-root
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: httpbin-non-root
+    spec:
+      containers:
+      - image: 10.172.16.5:5000/yogendra/httpbin:latest
+        name: httpbin
+        ports:
+        - name:  http
+          containerPort: 8080
+          protocol: TCP
+        resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: httpbin-non-root
+  name: httpbin-non-root
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: http
+    name: http
+  selector:
+    app: httpbin-non-root
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: httpbin-non-root  
+  labels:
+    app: httpbin-non-root
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: httpbin-non-root-tls
+      hosts:
+        - httpbin-non-root.poc.telenorbank.local
+  rules:
+    - host: httpbin-non-root.poc.telenorbank.local
+      http:
+        paths:
+          - backend:
+              serviceName: httpbin-non-root
+              servicePort: http
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: httpbin-non-root
+  labels:
+    app: httpbin-non-root
+spec:
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: httpbin-non-root

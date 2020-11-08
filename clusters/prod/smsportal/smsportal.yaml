@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+   name: smsportal
+spec:
+  serviceName: smsportal
+  replicas: 3
+  selector:
+    matchLabels:
+      app: smsportal
+  template:
+    metadata:
+      labels:
+        app: smsportal
+        version: "0.0.1"
+    spec:
+      imagePullSecrets:
+        - name: local-harbor
+      containers:
+        # - image: 10.172.16.5:5000/smsportalgmt
+        - image: harbor.poc.telenorbank.local/library/smsportalgmt:latest
+          name: smsportal
+          ports:
+          - containerPort: 9999
+            name: http
+          volumeMounts:
+          - mountPath: /home/logs
+            name: smsportal-logs
+          - mountPath: /u01/appservice/sms_portal_files
+            name: smsportal-uploads
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 4000Mi
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+      affinity:         
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - smsportal
+              topologyKey: kubernetes.io/hostname     
+  volumeClaimTemplates:
+    - metadata:
+        name: smsportal-logs
+        annotations:
+          volume.beta.kubernetes.io/storage-class: vsphere-3par
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: smsportal-uploads
+        annotations:
+          volume.beta.kubernetes.io/storage-class: vsphere-3par
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smsportal
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: http
+    nodePort: 30080
+    name: http
+  selector:
+    app: smsportal
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smsportal-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: http
+    name: http
+  selector:
+    app: smsportal
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: smsportal  
+  labels:
+    app: smsportal
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca    
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: smsportal-tls
+      hosts:
+        - smsportal.poc.telenorbank.local
+  rules:
+    - host: smsportal.poc.telenorbank.local
+      http:
+        paths:
+          - backend:
+              serviceName: smsportal
+              servicePort: http
+    - http:
+        paths:
+          - backend:
+              serviceName: smsportal
+              servicePort: http
+

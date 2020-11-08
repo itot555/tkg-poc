@@ -1,0 +1,11 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: notification
+spec:
+  image: 10.172.16.5:5000/rabbitmq:3.8.9
+  persistence:
+    storageClassName: vsphere-3par
+    storage: 20Gi
+  replicas: 3
+

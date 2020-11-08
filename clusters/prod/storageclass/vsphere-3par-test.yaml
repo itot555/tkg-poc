@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vsphere-3par-test
+  name: vsphere-3par-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vsphere-3par-test
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: vsphere-3par-test
+    spec:
+      volumes:
+        - name: html
+          persistentVolumeClaim:
+            claimName: vsphere-3par-test-pvc
+      containers:
+        - name: task-pv-container
+          image: 10.172.16.5:5000/nginx
+          ports:
+            - containerPort: 80
+              name: "http-server"
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          volumeMounts:
+          - mountPath: "/usr/share/nginx/html"
+            name: html
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: vsphere-3par-test-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: vsphere-3par
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

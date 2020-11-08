@@ -1,0 +1,26 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smsportal-logs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: vsphere-3par
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: smsportal-uploads
+  annotations:
+    volume.beta.kubernetes.io/storage-class: vsphere-3par
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
